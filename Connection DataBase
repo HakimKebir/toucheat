@@ -1,0 +1,77 @@
+package com.example.hakimbelouahranikebir.testdb;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+    private DatabaseManager databaseManage;
+    private TextView productView;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        productView=(TextView) findViewById(R.id.productView);
+        databaseManage=new DatabaseManager(this);
+        databaseManage.insertProduit("Steak",20);
+        databaseManage.insertProduit("Pain",30);
+        databaseManage.insertProduit("Poulet",20);
+        databaseManage.insertProduit("Frite",20);
+
+        databaseManage.close();
+
+
+    }
+
+}
+
+
+package com.example.hakimbelouahranikebir.testdb;
+import android.content.Context;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import java.util.Queue;
+
+/**
+ * Created by Mathieu on 03/07/2018.
+ */
+
+public class DatabaseManager extends SQLiteOpenHelper{
+
+
+    private  static final String DATABASE_NAME ="Test.db";
+    private static final int DATABASE_VERSION=1;
+    public  DatabaseManager(Context context){
+        super(context,DATABASE_NAME,null,DATABASE_VERSION);
+    }
+    public void onCreate (SQLiteDatabase db){
+        String strSql="Create table Product("
+                + "idProduit integer primary key autoincrement,"
+                + "intitule text not null,"
+                + "quantite integer"
+                + ")";
+        db.execSQL(strSql);
+
+        Log.i("DATABASE","onCreate invoked");
+
+
+    }
+
+    public  void onUpgrade (SQLiteDatabase db,int oldVersion,int newVersion){
+
+    }
+
+    public void insertProduit (String intitule, int quantite){
+        intitule=intitule.replace("'","''");
+        String strSql="insert into Product (intitule,quantite) values ('"
+                + intitule + "',"+ quantite + ")";
+        this.getWritableDatabase().execSQL(strSql);
+        Log.i("DATABASE","onCreate invoked");
+    }
+
+}
